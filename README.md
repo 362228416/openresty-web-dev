@@ -8,6 +8,8 @@
 
 [openresty 前端开发入门一](http://blog.csdn.net/qq362228416/article/details/53934004)
 
+[openresty 前端开发入门二](http://blog.csdn.net/qq362228416/article/details/53948361)
+
 测试运行
 
 ```
