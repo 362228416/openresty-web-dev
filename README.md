@@ -10,6 +10,8 @@
 
 [openresty 前端开发入门二](http://blog.csdn.net/qq362228416/article/details/53948361)
 
+[openresty 前端开发入门三之JSON篇](http://blog.csdn.net/qq362228416/article/details/53948777)
+
 测试运行
 
 ```
