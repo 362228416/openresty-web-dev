@@ -14,6 +14,35 @@
 
 [openresty 前端开发入门四之Redis篇](http://blog.csdn.net/qq362228416/article/details/53948961)
 
+openresty 前端开发入门五之Mysql篇
+
+openresty 前端开发入门六之调试篇
+
+openresty 前端开发进阶一之http后端
+
+openresty 前端开发进阶二之后端整合
+
+openresty 前端开发进阶三之后端整合二
+
+openresty 前端开发进阶四之session篇
+
+openresty 前端开发进阶五之cookie篇
+
+openresty 前端开发进阶六之websocket篇
+
+openresty 前端开发高级应用一之性能优化
+
+openresty 前端开发高级应用一之动态追踪技术
+
+openresty 简单应用
+
+openresty 灰度发布
+
+openresty url重写
+
+... 持续更新待续
+
+
 测试运行
 
 ```
