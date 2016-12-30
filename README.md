@@ -12,6 +12,8 @@
 
 [openresty 前端开发入门三之JSON篇](http://blog.csdn.net/qq362228416/article/details/53948777)
 
+[openresty 前端开发入门四之Redis篇](http://blog.csdn.net/qq362228416/article/details/53948961)
+
 测试运行
 
 ```
