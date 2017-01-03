@@ -1,11 +1,11 @@
 local mysql = require "resty.mysql"
 
 local config = {
-    host = "114.215.222.190",
+    host = "localhost",
     port = 3306,
     database = "mysql",
     user = "root",
-    password = "testdbadmin123"
+    password = "admin"
 }
 
 local _M = {}
