@@ -14,7 +14,7 @@
 
 [openresty 前端开发入门四之Redis篇](http://blog.csdn.net/qq362228416/article/details/53948961)
 
-openresty 前端开发入门五之Mysql篇
+[openresty 前端开发入门五之Mysql篇](http://blog.csdn.net/qq362228416/article/details/53999565)
 
 openresty 前端开发入门六之调试篇
 
