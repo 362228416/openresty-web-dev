@@ -1,0 +1,35 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Login Page</title>
+</head>
+<body>
+	UserName: <input type="text" id="username" value="admin">
+	Password: <input type="password" id="password" value="admin">
+	<a href="javascript:void(0)" onclick="login()">Login</a>
+	<a href="javascript:void(0)" onclick="local_login()">Local Login</a>
+	<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+	<script>
+		function login() {
+			var username = $('#username').val();
+			var password = $('#password').val();
+			$.post('/user/login', {username: username, password: password}, function(res){
+				console.log(res)
+				var msg = res.ret ? "登录成功" : "登录失败"
+				alert(msg)
+			}, 'json')
+		}
+
+		function local_login() {
+			var username = $('#username').val();
+			var password = $('#password').val();
+			$.post('/lua/local-login', {username: username, password: password}, function(res){
+				console.log(res)
+				var msg = res.ret ? "本地登录成功" : "本地登录失败"
+				alert(msg)
+			}, 'json')
+		}
+
+	</script>
+</body>
+</html>
