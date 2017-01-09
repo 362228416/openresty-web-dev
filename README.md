@@ -18,6 +18,10 @@
 
 [openresty 前端开发入门六之调试篇](http://blog.csdn.net/qq362228416/article/details/54018524)
 
+openresty 前端开发轻量级MVC框架封装一（控制器篇）
+
+openresty 前端开发轻量级MVC框架封装二（渲染篇）
+
 [openresty 前端开发进阶一之http后端](http://blog.csdn.net/qq362228416/article/details/54195896)
 
 openresty 前端开发进阶二之后端整合
