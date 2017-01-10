@@ -20,7 +20,7 @@
 
 [openresty 前端开发轻量级MVC框架封装一（控制器篇）](http://blog.csdn.net/qq362228416/article/details/54301137)
 
-openresty 前端开发轻量级MVC框架封装二（渲染篇）
+[openresty 前端开发轻量级MVC框架封装二（渲染篇）](http://blog.csdn.net/qq362228416/article/details/54326854)
 
 [openresty 前端开发进阶一之http后端](http://blog.csdn.net/qq362228416/article/details/54195896)
 
