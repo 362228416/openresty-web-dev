@@ -44,6 +44,10 @@ openresty 灰度发布
 
 openresty url重写
 
+openresty IP防火墙
+
+[openresty 之 nginx-api-for-lua](https://github.com/openresty/lua-nginx-module#nginx-api-for-lua) ngx所有API都在这里，最好的文档
+
 ... 持续更新待续
 
 
