@@ -42,7 +42,7 @@ openresty 简单应用
 
 openresty 灰度发布
 
-openresty url重写
+[openresty url重写](https://github.com/362228416/openresty-web-dev/tree/master/demo10)
 
 openresty IP防火墙
 
