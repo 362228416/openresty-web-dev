@@ -1,0 +1,20 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cookie示例</title>
+</head>
+<body>
+    <script>
+        if (document.cookie.length > 0) {
+            var cookies = document.cookie.split('; ')
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i]
+                var kv = cookie.split('=')
+                document.write(kv[0] + ' = ' + decodeURIComponent(kv[1]) + '<br/>')
+            }
+        }
+    </script>
+</body>
+</html>
