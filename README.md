@@ -44,7 +44,7 @@ openresty 灰度发布
 
 [openresty url重写](https://github.com/362228416/openresty-web-dev/tree/master/demo10)
 
-openresty IP防火墙
+[openresty IP防火墙](https://github.com/362228416/openresty-web-dev/tree/master/demo11)
 
 [openresty 之 nginx-api-for-lua](https://github.com/openresty/lua-nginx-module#nginx-api-for-lua) ngx所有API都在这里，最好的文档
 
