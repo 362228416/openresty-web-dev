@@ -6,23 +6,23 @@
 
 [openresty 前端开发序](http://blog.csdn.net/qq362228416/article/details/53537103)
 
-[openresty 前端开发入门一](http://blog.csdn.net/qq362228416/article/details/53934004)
+[openresty 前端开发入门一](https://github.com/362228416/openresty-web-dev/tree/master/demo1)
 
-[openresty 前端开发入门二](http://blog.csdn.net/qq362228416/article/details/53948361)
+[openresty 前端开发入门二](https://github.com/362228416/openresty-web-dev/tree/master/demo2)
 
-[openresty 前端开发入门三之JSON篇](http://blog.csdn.net/qq362228416/article/details/53948777)
+[openresty 前端开发入门三之JSON篇](https://github.com/362228416/openresty-web-dev/tree/master/demo3)
 
-[openresty 前端开发入门四之Redis篇](http://blog.csdn.net/qq362228416/article/details/53948961)
+[openresty 前端开发入门四之Redis篇](https://github.com/362228416/openresty-web-dev/tree/master/demo4)
 
-[openresty 前端开发入门五之Mysql篇](http://blog.csdn.net/qq362228416/article/details/53999565)
+[openresty 前端开发入门五之Mysql篇](https://github.com/362228416/openresty-web-dev/tree/master/demo5)
 
-[openresty 前端开发入门六之调试篇](http://blog.csdn.net/qq362228416/article/details/54018524)
+[openresty 前端开发入门六之调试篇](https://github.com/362228416/openresty-web-dev/tree/master/demo6)
 
-[openresty 前端开发轻量级MVC框架封装一（控制器篇）](http://blog.csdn.net/qq362228416/article/details/54301137)
+[openresty 前端开发轻量级MVC框架封装一（控制器篇）](https://github.com/362228416/openresty-web-dev/tree/master/demo8)
 
-[openresty 前端开发轻量级MVC框架封装二（渲染篇）](http://blog.csdn.net/qq362228416/article/details/54326854)
+[openresty 前端开发轻量级MVC框架封装二（渲染篇）](https://github.com/362228416/openresty-web-dev/tree/master/demo9)
 
-[openresty 前端开发进阶一之http后端](http://blog.csdn.net/qq362228416/article/details/54195896)
+[openresty 前端开发进阶一之http后端](https://github.com/362228416/openresty-web-dev/tree/master/demo7)
 
 openresty 前端开发进阶二之后端整合
 
