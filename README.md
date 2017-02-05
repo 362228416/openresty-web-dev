@@ -1,6 +1,6 @@
 # openresty-web-dev
 
-本项目是我写的一系列openresty web 前端开发文章的实例demo，方便测试运行，喜欢请点右上角Star！
+本项目是我写的一系列openresty web 前端开发文章的实例demo，方便测试运行，喜欢请点↑↑↑右上角Star↑↑↑
 ### 文章目录
 
 [openresty 前端开发序](http://blog.csdn.net/qq362228416/article/details/53537103)
