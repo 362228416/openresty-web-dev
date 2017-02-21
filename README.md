@@ -41,6 +41,8 @@ openresty 简单应用
 
 openresty 灰度发布
 
+[openresty 整合阿里云oss](javascript:alert('先占一个位置'))
+
 [openresty url重写](https://github.com/362228416/openresty-web-dev/tree/master/demo10)
 
 [openresty IP防火墙](https://github.com/362228416/openresty-web-dev/tree/master/demo11)
