@@ -23,7 +23,7 @@
 
 [openresty 前端开发进阶一之http后端](https://github.com/362228416/openresty-web-dev/tree/master/demo7)
 
-openresty 前端开发进阶二之后端整合
+[openresty 前端开发进阶二之https后端](https://github.com/362228416/openresty-web-dev/tree/master/demo13)
 
 openresty 前端开发进阶三之后端整合二
 

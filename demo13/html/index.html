@@ -1,0 +1,16 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Login Page</title>
+</head>
+<body>
+	<a href="javascript:void(0)" onclick="test()">测试</a>
+    <pre id="ret"></pre>
+	<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+	<script>
+		function test() {
+			$('#ret').load('/lua/test', {code: '123456'})
+		}
+	</script>
+</body>
+</html>
