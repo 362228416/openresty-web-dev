@@ -55,7 +55,6 @@ openresty 灰度发布
 
 ... 持续更新待续
 
-
 测试运行
 
 ```
@@ -63,3 +62,7 @@ $ git checkout https://github.com/362228416/openresty-web-dev.git
 $ cd openresty-web-dev
 $ openresty -p demo1 # 这里按实际情况来选择一个demo运行
 ```
+
+如果你觉得不错，并在项目中使用到它，还可以向我捐献，鼓励鼓励我，金额不限
+
+<img src="http://yd4p.oss-cn-hangzhou.aliyuncs.com/wxpay.png" width="500"/>
