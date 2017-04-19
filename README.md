@@ -45,7 +45,7 @@ openresty 灰度发布
 
 [openresty 应用打包并使用luajit编译lua代码实现简单加密](https://my.oschina.net/362228416/blog/846741)
 
-[openresty 整合阿里云oss](javascript:alert('先占一个位置'))
+[openresty 整合阿里云oss](https://github.com/362228416/lua-resty-oss)
 
 [openresty url重写](https://github.com/362228416/openresty-web-dev/tree/master/demo10)
 
