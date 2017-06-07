@@ -41,6 +41,8 @@ openresty 简单应用
 
 openresty 灰度发布
 
+[openresty 用lua实现负载均衡](https://github.com/362228416/openresty-web-dev/tree/master/demo15)
+
 [openresty 定时任务](https://github.com/362228416/openresty-web-dev/tree/master/demo14)
 
 [openresty 应用打包并使用luajit编译lua代码实现简单加密](https://my.oschina.net/362228416/blog/846741)
