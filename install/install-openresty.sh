@@ -2,8 +2,9 @@
 sudo apt-get update
 sudo apt-get install -y libpcre3 libpcre3-dev
 sudo apt-get install -y openssl libssl-dev
+sudo apt-get install -y openssl zlib1g-dev
 cd /tmp
-version="1.13.6.2"
+version="1.15.8.2"
 name=openresty-$version
 file=$name.tar.gz
 prefix=/usr/local/openresty
