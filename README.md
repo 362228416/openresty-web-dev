@@ -67,6 +67,6 @@ $ cd openresty-web-dev
 $ openresty -p demo1 # 这里按实际情况来选择一个demo运行
 ```
 
-如果你觉得不错，并在项目中使用到它，还可以向我捐献，鼓励鼓励我，金额不限
+如果你觉得不错，并在项目中使用到它，还可以请我喝杯咖啡☕️
 
 ![微信二维码](https://github.com/362228416/openresty-web-dev/blob/master/wxpay.png?raw=true)
