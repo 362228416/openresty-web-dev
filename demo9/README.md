@@ -1,11 +1,10 @@
-#### 这一章主要介绍怎么使用模板，进行后端渲染，主要用到了[lua-resty-template](https://github.com/bungle/lua-resty-template)这个库，直接下载下来，放到lualib里面就行了，推荐第三方库，已经框架都放到lualib目录里面，lua目录放项目源码，比较好管理，可以知道那些是项目的，哪些是第三方库，可复用的
+#### This chapter mainly introduces how to use templates for backend rendering, mainly using the [lua-resty-template](https://github.com/bungle/lua-resty-template) library. Just download it and put it in the lualib directory. It is recommended to put third-party libraries and frameworks in the lualib directory, and the lua directory for project source code, which is easier to manage. You can know which are the project's and which are third-party libraries, and which are reusable.
 
-下载解压到lualib目录之后，就算安装完成了，下面来试用一下，更详细的可以到github上面看文档
+After downloading and unzipping to the lualib directory, the installation is complete. Let's try it out below, for more details you can check the documentation on GitHub.
 
 conf/nginx.conf
 
-```
-
+```markdown
 worker_processes  1;
 
 error_log logs/error.log notice;
@@ -22,7 +21,7 @@ http {
         lua_code_cache off;
 
         location / {
-            root lua; # 这个很重要，不然模板文件会找不到
+            root lua; # This is very important, otherwise the template file will not be found
             default_type "text/html; charset=utf-8";
             content_by_lua_file lualib/lite/mvc.lua;
         }
@@ -36,16 +35,16 @@ http {
 
 lua/index.lua
 
-```
+```lua
 local template = require "resty.template"
 
 local _M = {}
 
 function _M.index()
     local model = {title = "hello template", content = "<h1>content</h1>"}
-    -- 1、外部模板文件
+    -- 1、External template file
     -- template.render('tpl/index.html', model)
-    -- 2、内嵌模板代码
+    -- 2、Embedded template code
     template.render([[
 <html>
 <head>
@@ -64,7 +63,7 @@ return _M
 
 lua/tpl/index.html
 
-```
+```html
 <html>
 <head>
     <meta charset="UTF-8">
@@ -76,12 +75,12 @@ lua/tpl/index.html
 </html>
 ```
 
-跟spring mvc 有点像，指定一个 view , model，然后就可以渲染了，模板语法有很多种，{{ 变量 }} 会进行转义，{* 不会转义 *}，{% lua 代码 %}，跟jsp有点类似，但是很轻量，只有单个文件，更多用法可以到[github](https://github.com/bungle/lua-resty-template)上面看。
+It's a bit like spring mvc, specify a view, model, and then you can render. There are many kinds of template syntax, {{ variable }} will be escaped, {* will not be escaped *}, {% lua code %}, it's a bit like jsp, but it's very lightweight, only a single file, more usage can be seen on [github](https://github.com/bungle/lua-resty-template).
 
-浏览器访问 http://localhost/index ，输出content
+Visit http://localhost/index in the browser, output content
 
-至此，服务端渲染就搞定了，已经可以开发一些常见的web应用，使用openresty来做前端，然后通过http访问后端的java，也可以在前端，直接访问mysql、redis，只不过mysql只能做一些简单的非事务操作，因为lua-resty-mysql这个库不支持事务，我在github上面问过春哥了，当然如果你直接调用存储过程，把事务放在过程里面控制的话也可以，现在你可以直接写同步的代码风格，就能获得高并发、低消耗，非堵塞等各种好处。
+At this point, server-side rendering is done, and you can develop some common web applications. Use openresty to do the front end, and then access the back end of java through http. You can also directly access mysql and redis on the front end, but mysql can only do some simple non-transactional operations, because the lua-resty-mysql library does not support transactions. I asked Chun brother on GitHub, of course, if you directly call stored procedures, you can control transactions in the process. Now you can write synchronous code style, and you can get high concurrency, low consumption, non-blocking and other benefits.
 
-我们已经用openresty开发了pc版，还有微信版的web应用，已经运行几个月了，很稳定，上手也简单，开发的时候不用编译，直接启动一个nginx就搞定，部署的时候只需要10几M的内存，还可以用openresty做各种事情，高并发api、web防火墙，直接跑在nginx里面，简直爽歪歪，有机会跟大家分享。
+We have developed a PC version and a WeChat version of the web application with openresty, which has been running for several months and is very stable. It is also easy to get started. When developing, you don't need to compile, just start an nginx. When deploying, you only need about 10M of memory. You can also use openresty to do various things, high concurrency API, web firewall, directly run in nginx, it's simply cool, I have the opportunity to share with everyone.
 
-[示例代码](https://github.com/362228416/openresty-web-dev) 参见demo9部分
+[Sample code](https://github.com/362228416/openresty-web-dev) See demo9 part

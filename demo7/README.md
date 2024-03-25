@@ -1,15 +1,14 @@
-#### 做前端开发，大多数情况下，都需要跟后端打交道，而最常见的方式则是通过http请求，进行通信。
-在openresty中，通过http跟后端整合通信的方式又很多种，各有各的好处，可以根据情况交叉使用
+#### As a front-end developer, in most cases, you need to interact with the back-end, and the most common way is to communicate through HTTP requests.
+In openresty, there are many ways to integrate and communicate with the backend through HTTP, each with its own advantages, which can be used interchangeably according to the situation
 
-## 1、直接proxy
+## 1. Direct proxy
 
-这种方式最简单，也是我们最熟悉的，直接配置一个反向代理，跟nginx的用法一致
+This method is the simplest and most familiar to us, directly configuring a reverse proxy, consistent with the usage of nginx
 
-比如我们有一个后端服务，提供用户相关接口，是java写的，端口8080，为了简单起见，我直接在openresty里面配置一个server，模拟java端，通过一个简单的案例的来说明情况
+For example, we have a backend service that provides user-related interfaces, written in Java, port 8080, for simplicity, I directly configure a server in openresty to simulate the Java side, through a simple case to explain the situation
 
 nginx.conf 
 ```
-
 worker_processes  1;
 
 error_log logs/error.log;
@@ -36,7 +35,7 @@ http {
 
     }
 
-	# 这个只是模拟后端
+	# This is just to simulate the backend
     server {
         listen 8080;
         server_name localhost;
@@ -50,10 +49,10 @@ http {
 }
 ```
 
-上面配置了两个location，将所有以/user开头的请求都转到后端的8080服务器，其他的则是静态页面，直接从html目录读取，然后返回，从这里开始就是前端开发了
+The above configuration has two locations, all requests starting with /user are transferred to the backend server on port 8080, others are static pages, read directly from the html directory, and then returned, from here on is front-end development
 
 
-为了简单起见，假设后端提供了一个登陆接口，我们这里直接用lua来实现一下就好了，检查用户名跟密码是admin，就返回成功，否则返回失败
+For simplicity, assume that the backend provides a login interface, we can directly implement it with lua here, check if the username and password are admin, return success, otherwise return failure
 
 lua/login.lua   
 ```
@@ -94,9 +93,13 @@ index.html
 		function login() {
 			var username = $('#username').val();
 			var password = $('#password').val();
-			$.post('/user/login', {username: username, password: password}, function(res){
+			$.post('/user/login', {username: username, password: password
+
+},
+
+ function(res){
 				console.log(res)
-				var msg = res.ret ? "登录成功" : "登录失败"
+				var msg = res.ret ? "Login successful" : "Login failed"
 				alert(msg)
 			}, 'json')
 		}
@@ -105,30 +108,30 @@ index.html
 </html>
 ```
 
-2、使用ngx.location.captrue
+2. Use ngx.location.capture
 
-这个方法主要用于发送内部请求，即请求当前server内的其他location，默认会将当前请求的参数带过去，也可以手动指定参数，GET参数通过args传递，post参数通过body传递
+This method is mainly used to send internal requests, that is, to request other locations within the current server, by default it will carry the parameters of the current request, but you can also manually specify parameters, GET parameters are passed through args, post parameters are passed through body
 
-如：
+For example:
 
 local req = require "req"
 local args = req.getArgs()
 
-GET 调用
+GET call
 
 local res = ngx.location.capture('/user/login', {
     method = ngx.HTTP_GET,
     args = args,
 });
 
-POST 调用
+POST call
 
 local res = ngx.location.capture('/user/login', {
     method = ngx.HTTP_POST,
     body = ngx.encode_args(args),
 });
 
-现在我们自己写一个lua来调用后台接口实现登陆，然后对请求做一点处理，实现一些额外的逻辑，比如在原来的参数上面加上一个from字段
+Now we write a lua to call the backend interface to implement login, and then do a little processing on the request, implement some additional logic, such as adding a from field on the original parameters
 
 lua/local-login.lua
 
@@ -139,11 +142,11 @@ local cjson = require "cjson"
 local args = req.getArgs()
 
 -- GET
-local res = ngx.location.capture('/user/login', {method = ngx.HTTP_GET, args = args})
+local res = ngx.location.capture('/user/login', {method: ngx.HTTP_GET, args = args})
 -- POST
--- local res = ngx.location.capture('/user/login', {method = ngx.HTTP_POST, body = ngx.encode_args(args)})
+-- local res = ngx.location.capture('/user/login', {method: ngx.HTTP_POST, body = ngx.encode_args(args)})
 
--- print(res.status) -- 状态码
+-- print(res.status) -- status code
 
 if res.status == 200 then
 	local ret = cjson.decode(res.body)
@@ -156,7 +159,7 @@ end
 
 ```
 
-index.html 也需要改一下，多加一个按钮，调用本地登陆接口
+index.html also needs to be changed, add another button, call the local login interface
 ```
 <html>
 <head>
@@ -175,7 +178,7 @@ index.html 也需要改一下，多加一个按钮，调用本地登陆接口
 			var password = $('#password').val();
 			$.post('/user/login', {username: username, password: password}, function(res){
 				console.log(res)
-				var msg = res.ret ? "登录成功" : "登录失败"
+				var msg = res.ret ? "Login successful" : "Login failed"
 				alert(msg)
 			}, 'json')
 		}
@@ -185,7 +188,7 @@ index.html 也需要改一下，多加一个按钮，调用本地登陆接口
 			var password = $('#password').val();
 			$.post('/lua/local-login', {username: username, password: password}, function(res){
 				console.log(res)
-				var msg = res.ret ? "本地登录成功" : "本地登录失败"
+				var msg = res.ret ? "Local login successful" : "Local login failed"
 				alert(msg)
 			}, 'json')
 		}
@@ -195,11 +198,11 @@ index.html 也需要改一下，多加一个按钮，调用本地登陆接口
 </html>
 ```
 
-3、第三方模块[lua-resty-http](https://github.com/pintsized/lua-resty-http)
+3. Third-party module [lua-resty-http](https://github.com/pintsized/lua-resty-http)
 
-这种方式跟上面那种不同的地方是调用的时候，不会带上本地请求的请求头、cookie、以及请求参数，不过这也使得请求更纯粹，不会带上那些没必要的东西，减少数据传输
+The difference between this method and the one above is that when calling, it will not carry the request header, cookie, and request parameters of the local request, but this also makes the request more pure, not carrying those unnecessary things, reducing data transmission
 
-最后local-login.lua 变成如下
+Finally local-login.lua becomes as follows
 ```
 local req = require "req"
 local cjson = require "cjson"
@@ -208,10 +211,10 @@ local http = require "resty.http"
 local args = req.getArgs()
 
 -- GET
--- local res = ngx.location.capture('/user/login', {method = ngx.HTTP_GET, args = args})
+-- local res = ngx.location.capture('/user/login', {method: ngx.HTTP_GET, args = args})
 
 -- POST
--- local res = ngx.location.capture('/user/login', {method = ngx.HTTP_POST, body = ngx.encode_args(args)})
+-- local res = ngx.location.capture('/user/login', {method: ngx.HTTP_POST, body = ngx.encode_args(args)})
 
 -- http
 local httpc = http.new()
@@ -227,7 +230,7 @@ local res = httpc:request_uri("http://127.0.0.1:8080/user/login", {
 })
 httpc:set_keepalive(60)
 
-print(res.status) -- 状态码
+print(res.status) -- status code
 
 if res.status == 200 then
 	local ret = cjson.decode(res.body)
@@ -239,10 +242,6 @@ else
 end
 ```
 
-到此，基本上已经能通过openresty，做一些前后端的交互了，下次介绍怎么使用openresty模板渲染，以及搭配react开发前端。
+By now, you should be able to interact with the front and back ends through openresty. Next time, I will introduce how to use openresty template rendering and develop the front end with react.
 
-[示例代码](https://github.com/362228416/openresty-web-dev) 参见demo7部分
-
-
-
-
+[Sample code](https://github.com/362228416/openresty-web-dev) See demo7 part

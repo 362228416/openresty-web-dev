@@ -1,28 +1,28 @@
-#### 这章主要介绍一下，lua怎么返回一个json字符串，怎么把一个table转成json字符串，又怎么把一个json字符串转成json
+#### This chapter mainly introduces how Lua returns a JSON string, how to convert a table into a JSON string, and how to convert a JSON string into JSON
 
-其实很简答，直接使用cjson库的encode、decode方法即可
+Actually, it's very simple, just use the encode and decode methods of the cjson library
 
 lua/hello.lua
-```
+```lua
 local cjson = require "cjson"
 
--- 先定义一个json字符串
+-- First define a JSON string
 local json_str = '{"name": "Bruce.Lin", "age": 25}'
--- 这里把它转成对象，然后输出属性
+-- Here we convert it into an object, then output the properties
 local json = cjson.decode(json_str)
-ngx.say("Name = " .. json['name'] .. ", Age = " .. tostring(json['age'])) -- 这里需要把25转成字符串，才能进行字符串拼接
+ngx.say("Name = " .. json['name'] .. ", Age = " .. tostring(json['age'])) -- Here we need to convert 25 into a string to perform string concatenation
 
--- 输出 Name = Bruce.Lin, Age = 25
+-- Output Name = Bruce.Lin, Age = 25
 
-ngx.say('<br/>') -- 换行
+ngx.say('<br/>') -- Line break
 
--- 接下来我们再把json对象转成json字符串
+-- Next, we convert the JSON object back into a JSON string
 local json_str2 = cjson.encode(json)
 ngx.say(json_str2)
 
--- 输出{"name":"Bruce.Lin","age":25}
+-- Output {"name":"Bruce.Lin","age":25}
 
-ngx.say('<br/>') -- 换行
+ngx.say('<br/>') -- Line break
 
 local obj = {
 	ret = 200,
@@ -31,7 +31,7 @@ local obj = {
 
 ngx.say(cjson.encode(obj))
 
-ngx.say('<br/>') -- 换行
+ngx.say('<br/>') -- Line break
 
 local obj2 = {}
 
@@ -42,6 +42,7 @@ ngx.say(cjson.encode(obj2))
 
 ```
 
-ok，这里我们就学会的json字符串
+Ok, here we have learned the JSON string
 
-[示例代码](https://github.com/362228416/openresty-web-dev) 参见demo3部分
+[Example code](https://github.com/362228416/openresty-web-dev) See demo3 part
+```

@@ -1,33 +1,33 @@
-OpenResty ™ 是一个基于 Nginx 与 Lua 的高性能 Web 平台，其内部集成了大量精良的 Lua 库、第三方模块以及大多数的依赖项。用于方便地搭建能够处理超高并发、扩展性极高的动态 Web 应用、Web 服务和动态网关。
+ OpenResty ™ is a high-performance Web platform based on Nginx and Lua. It integrates a large number of excellent Lua libraries, third-party modules, and most dependencies. It is used to conveniently build dynamic Web applications, Web services, and dynamic gateways that can handle ultra-high concurrency and have extremely high scalability.
 
-OpenResty 通过汇聚各种设计精良的 Nginx 模块（主要由 OpenResty 团队自主开发），从而将 Nginx 有效地变成一个强大的通用 Web 应用平台。这样，Web 开发人员和系统工程师可以使用 Lua 脚本语言调动 Nginx 支持的各种 C 以及 Lua 模块，快速构造出足以胜任 10K 乃至 1000K 以上单机并发连接的高性能 Web 应用系统。
+OpenResty effectively turns Nginx into a powerful general-purpose Web application platform by gathering various well-designed Nginx modules (mainly developed by the OpenResty team). In this way, Web developers and system engineers can use the Lua scripting language to call various C and Lua modules supported by Nginx, and quickly construct high-performance Web application systems that can handle 10K to 1000K or more concurrent connections per machine.
 
-OpenResty 的目标是让你的Web服务直接跑在 Nginx 服务内部，充分利用 Nginx 的非阻塞 I/O 模型，不仅仅对 HTTP 客户端请求,甚至于对远程后端诸如 MySQL、PostgreSQL、Memcached 以及 Redis 等都进行一致的高性能响应。
+The goal of OpenResty is to run your Web service directly inside the Nginx service, making full use of Nginx's non-blocking I/O model, not only for HTTP client requests, but even for high-performance responses to remote backends such as MySQL, PostgreSQL, Memcached, and Redis.
 
-以上是从官网拷过来的原话，我们通过写一个hello world，来走进openresty开发之旅
+The above is the original words copied from the official website. We will start the journey of OpenResty development by writing a hello world.
 
-**下载地址**
+**Download address**
 http://openresty.org/cn/download.html
 
-有的人不会下windows版，所以我这里直接给出下载地址，现在是最新版本，学会了之后，可以自己下载
+Some people don't know how to download the Windows version, so I will give the download address directly here. It is the latest version now. After learning, you can download it yourself.
 
-mac、linux 平台
+mac, linux platform
 https://openresty.org/download/openresty-1.11.2.2.tar.gz
 
-windows平台
+Windows platform
 https://openresty.org/download/openresty-1.11.2.2-win32.zip
 
-**关于安装**
-mac、linux安装看这里 http://openresty.org/cn/installation.html
-windows 直接之后直接启动就可以了，不用安装
+**About installation**
+See here for mac, linux installation http://openresty.org/cn/installation.html
+Windows can be started directly after downloading, no installation required
 
-安装完之后别着急启动
+Don't rush to start after installation
 
-**开始写代码了**
+**Start writing code**
 
-打开nginx目录下的conf/nginx.conf文件
+Open the nginx.conf file in the nginx/conf directory
 
-在server中新增以下代码
+Add the following code in the server
 ```
 location /hello {
     default_type text/html;
@@ -37,12 +37,12 @@ location /hello {
 }
 ```
 
-类似这样
+Like this
 ```
 http {
     server {
         listen 80;
-	    server_name localhost;
+        server_name localhost;
         location / {
             default_type text/html;
             content_by_lua '
@@ -53,22 +53,22 @@ http {
 }
 ```
 
-现在启动nginx，然后访问 http://localhost/hello，不出意外的话应该就OK了，如果你之前启动了，那么需要reload一下，nginx的基本操作这里就不介绍了
+Now start nginx, then visit http://localhost/hello, it should be OK if there is no accident. If you started it before, you need to reload it. The basic operation of nginx is not introduced here.
 
-通过**ngx.say** 我们可以往客户端输出响应文本，在整个request周期内可以多次调用，接受的参数是字符串，如果输出table会报错
+Through **ngx.say** we can output response text to the client. It can be called multiple times during the entire request cycle. The accepted parameter is a string. If the output is a table, an error will be reported.
 
-还有一个输出的函数是**ngx.print**，同样也是输出响应内容
+Another output function is **ngx.print**, which also outputs response content.
 
-这里有一个**坑**，就是调用ngx.say会在输出我们的内容之后会额外输出一个换行，但是ngx.print就不会，我之前一个同事用lua输出了一个200，然后前端用ajax调用，判断是否200，死活是false，看输出的内容就是200，差点怀疑人生，幸亏我比较机智，直接查看ajax请求源码，发现行号多了一行，就是那个换行，如果不仔细根本看不出来，这个坑被我一个同事踩了
+There is a **pitfall** here, that is, calling ngx.say will output a newline after our content, but ngx.print will not. I had a colleague who used lua to output 200, and then the front end called it with ajax. It was always false. The output content was 200. I almost doubted life. Fortunately, I was smart and directly checked the source code of the ajax request. I found that there was an extra line number, which was that newline. If you don't look carefully, you can't see it at all. This pit was stepped on by my colleague.
 
-上面的代码直接把lua代码写到nginx配置里面了，维护起来不是很方便，而且写代码的时候也没有语法高亮，提示这些，比较蛋疼，我们把它拿出来一个单独的文件，并放到一个nginx下面单独的lua目录下，方便管理
+The above code directly writes the lua code into the nginx configuration, which is not very convenient to maintain, and there is no syntax highlighting, prompting these when writing code, which is quite painful. We take it out into a separate file and put it in a separate lua directory under nginx for easy management.
 
 lua/hello.lua
 ```
 ngx.say("<p>hello, world</p>")
 ```
 
-nginx.conf 改成这样
+Change nginx.conf to this
 ```
 location / {
      default_type text/html;
@@ -76,29 +76,29 @@ location / {
  }
 ```
 
-然后nginx reload 一下，再看效果，应该是一样的
+Then nginx reloads it, and then look at the effect, it should be the same.
 
-我们修改一下hello.lua，在hello，world后面加一个！号，刷新浏览器发现没有任何变化，这是因为lua代码被缓存了，这就导致我们修改代码，就必须reload nginx 在能看到效果，如果是这样，那简直要疯了，其实要解决这个问题很简单，只要在nginx.conf里面把lua缓存给禁止掉就行了，当然在生产线上一定要把缓存打开，不然效果大打折扣
+We modify hello.lua, add an exclamation mark after hello, world, refresh the browser and find no change. This is because the lua code is cached. This leads to our modification of the code, and we must reload nginx to see the effect. If this is the case, it's simply going to be crazy. In fact, it's very simple to solve this problem. Just turn off the lua cache in nginx.conf. Of course, you must turn on the cache in the production line, otherwise the effect will be greatly reduced.
 
-禁止lua缓存
+Disable lua cache
 ```
 server {
    listen 80;
    server_name localhost;
-   lua_code_cache off; # 这个可以放在server下面，也可以凡在location下面，作用的范围也不一样，为了简单直接放这里了
+   lua_code_cache off; # This can be placed under the server, or it can be placed under the location. The scope of its effect is different. For simplicity, just put it here.
    location / {
        default_type text/html;
        content_by_lua_file lua/hello.lua;
    }
 }
 ```
-改完之后reload一下nginx，这里**重点声明**一下修改nginx配置必须要reload，否则是没有效果的
+After changing, reload nginx. Here is a **key statement** that you must reload after modifying the nginx configuration, otherwise it will not take effect.
 
-现在我们再改hello.lua，然后刷新浏览器就会发现可以实时生效了
+Now we change hello.lua again, and then refresh the browser to find that it can take effect in real time.
 
-观察以上代码其实还会发现一个问题，如果我们想要处理很多个请求，那不是要在nginx里面配置N个location吗，我们肯定不会这么做，这里可以通过nginx正在匹配动态指定lua文件名，即可完成我们的需求，后台我再介绍如何打造一个属于我们的mvc轻量级框架，这里我们先这么做
+Observing the above code will actually find another problem. If we want to handle many requests, isn't it necessary to configure N locations in nginx? We will definitely not do this. Here we can dynamically specify the lua file name through nginx regular matching to complete our needs. I will introduce later how to build a lightweight MVC framework that belongs to us. Let's do this first.
 
-location 改成这样
+Change location to this
 ```
 location ~ /lua/(.+) {
 	 content_by_lua_file lua/$1.lua;
@@ -107,10 +107,10 @@ location ~ /lua/(.+) {
 
 reload nginx
 
-这个时候访问hello world的请求url就变成了
-http://localhost/lua/hello 了
-同理，我们在lua文件里面创建一个welcome.lua的话，就可以通过
-http://localhost/lua/welcome 来访问了
-以此类推，我们就可以通过新增多个文件来处理不同的请求了，而且修改了还能实时生效，剩下的就是完成业务代码了，比如调一下redis返回数据，或者mysql之类的，有悟性的同学在这里已经可以做很多事情了
+At this time, the request url to visit hello world has become
+http://localhost/lua/hello
+Similarly, if we create a welcome.lua in the lua file, we can visit it through
+http://localhost/lua/welcome
+By analogy, we can handle different requests by adding multiple files, and we can take effect in real time after modification. The rest is to complete the business code, such as calling redis to return data, or mysql, etc. Students with comprehension can do a lot of things here.
 
-[示例代码](https://github.com/362228416/openresty-web-dev)  参见demo1部分
+[Sample code](https://github.com/362228416/openresty-web-dev) See the demo1 part

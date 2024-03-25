@@ -1,62 +1,66 @@
-# 这章主要演示怎么通过lua操作cookie
+# This chapter mainly demonstrates how to operate cookies through lua
 
-操作cookie有两种方式，一种是直接设置响应头，另外一种是用[lua-resty-cookie](https://github.com/cloudflare/lua-resty-cookie)库（其实原理是一样的，只不过做了一点封装），这个库也是春哥写的，可以放心使用，下面我分别介绍一下两种方式怎么用
+There are two ways to operate cookies, one is to directly set the response header, and the other is to use the [lua-resty-cookie](https://github.com/cloudflare/lua-resty-cookie) library (the principle is the same, but it's just a bit encapsulated). This library is also written by Chun Ge, you can use it with confidence. Below I will introduce how to use these two methods.
 
-## 读取cookie一（原生）
-```
-print(ngx.var.http_cookie) -- 获取所有cookie，这里获取到的是一个字符串，如果不存在则返回nil
-print(ngx.var.cookie_username) -- 获取单个cookie，_后面的cookie的name，如果不存在则返回nil
+## Reading cookies (native)
+```lua
+print(ngx.var.http_cookie) -- Get all cookies, here you get a string, if it does not exist, return nil
+print(ngx.var.cookie_username) -- Get a single cookie, the name of the cookie after _, if it does not exist, return nil
 ```
 
-## 设置cookie一（原生）
-```
-ngx.header['Set-Cookie'] = {'a=32; path=/', 'b=4; path=/'}  -- 批量设置cookie
-ngx.header['Set-Cookie'] = 'a=32; path=/'                   -- 设置单个cookie，通过多次调用来设置多个值
+## Setting cookies (native)
+```lua
+ngx.header['Set-Cookie'] = {'a=32; path=/', 'b=4; path=/'}  -- Set multiple cookies at once
+ngx.header['Set-Cookie'] = 'a=32; path=/'                   -- Set a single cookie, set multiple values by calling multiple times
 ngx.header['Set-Cookie'] = 'b=4; path=/'
-ngx.header['Set-Cookie'] = 'c=5; path=/; Expires=' .. ngx.cookie_time(ngx.time() + 60 * 30) -- 设置Cookie过期时间为30分钟
+ngx.header['Set-Cookie'] = 'c=5; path=/; Expires=' .. ngx.cookie_time(ngx.time() + 60 * 30) -- Set the cookie expiration time to 30 minutes
 ```
 
-熟悉http协议的应该都知道，设置cookie是通过在响应头中的Set-Cookie字段来操作的，既然知道原理那上面的代码应该就很好理解，其实只要知道怎么用lua来设置响应头即可
+Those familiar with the HTTP protocol should know that cookies are set by operating the Set-Cookie field in the response header. Since you know the principle, the above code should be easy to understand. In fact, you just need to know how to use lua to set the response header.
 
-## 获取cookie二（lua-resty-cookie）
-```
+## Getting cookies (lua-resty-cookie)
+```lua
 local cookie = resty_cookie:new()
-local all_cookie = cookie:get_all() -- 这里获取到所有的cookie，是一个table，如果不存在则返回nil
+local all_cookie = cookie:get_all() -- Here you get all the cookies, which is a table, if it does not exist, return nil
 print(cjson.encode(all_cookie))
-print(cookie:get('c'))              -- 获取单个cookie的值，如果不存在则返回nil
+print(cookie:get('c'))              -- Get the value of a single cookie, if it does not exist, return nil
 ```
 
-## 设置cookie二（lua-resty-cookie）
-```
+## Setting cookies (lua-resty-cookie)
+```lua
 cookie:set({
     key = "c",
     value = "123456",
     path = "/",
-    domain = "localhost",
+    domain = "localhost
+
+",
+
+
     expires = ngx.cookie_time(ngx.time() + 60 * 13)
 })
 ```
 
-OK, 访问
+OK, visit
 
-http://localhost/index  原生
+http://localhost/index  native
 
 http://localhost/index2  lua-resty-cookie
 
-两种方式各有各的好处
+Both methods have their own advantages
 
-第一种
-优点：
-简单，无依赖
-缺点：
-太简单？不够抽象，太底层？
+The first one
+Advantages:
+Simple, no dependencies
+Disadvantages:
+Too simple? Not abstract enough, too low-level?
 
-第二种
-优点：
-获取设置都很简单，简单的封装了一层，提供了更有表现力的api接口
-缺点：
-多引入一个库，其实也不算什么缺点
+The second one
+Advantages:
+Getting and setting are very simple, it simply encapsulates a layer and provides a more expressive API interface
+Disadvantages:
+Introduces an additional library, which is not really a disadvantage
 
-看情况而定吧，假如cookie操作得比较少的话，可以用第一种，假如操作得比较多，可以考虑用第二种，编码比较统一
+It depends on the situation. If the operation of cookies is relatively small, you can use the first one. If the operation is relatively large, you can consider using the second one, which is more uniform in coding.
 
-[示例代码](https://github.com/362228416/openresty-web-dev/tree/master/demo12) 参见demo12部分
+[Sample code](https://github.com/362228416/openresty-web-dev/tree/master/demo12) See the demo12 part

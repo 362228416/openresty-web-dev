@@ -1,6 +1,6 @@
-#### 大多数情况下，调试信息，都可以通过ngx.say打印出来，但是有的时候，我们希望打印调试日志，不影响到返回数据，所以系统打印到其它地方，比如日志文件，或者控制台
+#### In most cases, debugging information can be printed out through ngx.say, but sometimes, we hope to print debugging logs without affecting the returned data, so the system prints to other places, such as log files or the console.
 
-这里主要用到一个方法就是ngx.log，这个方法可以将日志输出到error.log里面，支持多种级别消息，如下：
+The main method used here is ngx.log, which can output logs to error.log, supporting various levels of messages, as follows:
 
 ```
 ngx.STDERR
@@ -14,7 +14,7 @@ ngx.INFO
 ngx.DEBUG
 ```
 
-可以通过以下方式输出调试信息，大多数情况下我们只要使用一个来输出我们的调试信息就好了，比如ngx.ALERT，我就比较喜欢这个，并且设置为我的idea live template了，只需要sout + TAB 就可以输出，关于idea有很多玩法，有时间可以分享给大家，就里就不说了
+You can output debugging information in the following way. In most cases, we only need to use one to output our debugging information, such as ngx.ALERT, which I like, and set it as my idea live template. You only need sout + TAB to output. There are many ways to play with idea, and I can share it with you when I have time. I won't say it here.
 
 lua/hello.lua
 ```
@@ -32,17 +32,17 @@ ngx.log(ngx.INFO, 'print to error.log')
 ngx.log(ngx.DEBUG, 'print to error.log')
 ```
 
-然后用浏览器访问 http://localhost/lua/hello  查看浏览器输出，还有 logs/error.log 文件输出，就能明白大概的意思了，也不用过多解释
+Then use the browser to visit http://localhost/lua/hello to see the browser output, and the output of the logs/error.log file, you can understand the general meaning, no need to explain too much.
 
-#### 还有一种就是直接调用lua的print方法，进行输出，这个方法默认也会输出到error.log，默认输出级别是NOTICE，但是需要编译openresty的时候加上debug参数，如果是下载的windows预编译版本的话，默认没有debug，所以部分信息可能看不到，有需要可以自己编译一个
+#### Another is to directly call the print method of lua for output. This method will also output to error.log by default. The default output level is NOTICE, but you need to add the debug parameter when compiling openresty. If it is the downloaded windows precompiled version, there is no debug by default, so some information may not be seen. If necessary, you can compile one yourself.
 
-当然nginx里面还可以配置error日志级别，如下
+Of course, you can also configure the error log level in nginx, as follows
 ```
 error_log  logs/error.log  notice;
 ```
 
-这句默认会在nginx.conf文件里面，只是注释掉了而已，只要打开注释就可以了，这样我们就可以直接通过print来输出日志了，完全是lua自带的函数，很多代码拿过来就可以直接使用
+This sentence will be in the nginx.conf file by default, just commented out. Just uncomment it, so we can directly output logs through print, which is a function built into lua, and many codes can be used directly.
 
-### 还有就是lua运行时报错信息捕获，原因可能是语法问题，或者空指针等等，导致500错误的，这些错误日志都会输出在error.log里面，可以用tail命令实时查看，也可以通过封装然后采用pcall的调用形式，进行函数调用，这样就不会出现500，可以根据执行成败，将结果输出到客户端，做到像php那样所见即所得，可以大大提高我们的开发效率，这个后面我会通过封装一个轻量级框架来介绍，这里就先不讲了，有兴趣的同学可以了解一下
+### There is also the capture of lua runtime error information, which may be due to syntax problems, null pointers, etc., causing 500 errors. These error logs will be output in error.log. You can view them in real time with the tail command, or you can encapsulate them and call them in the form of pcall. This will not cause 500, and you can output the results to the client according to the success or failure of execution, just like php's WYSIWYG, which can greatly improve our development efficiency. I will introduce this later by encapsulating a lightweight framework. I won't talk about it here. Interested students can learn about it.
 
-[示例代码](https://github.com/362228416/openresty-web-dev) 参见demo6部分
+[Sample code](https://github.com/362228416/openresty-web-dev) See demo6 part

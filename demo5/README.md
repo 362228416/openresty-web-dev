@@ -1,12 +1,12 @@
-openresty 前端开发入门五之Mysql篇
+openresty Front-end Development Introduction Part 5: Mysql
 
-#### 这章主要演示怎么通过lua连接mysql，并根据用户输入的name从mysql获取数据，并返回给用户
+#### This chapter mainly demonstrates how to connect to mysql through lua, get data from mysql based on the user's input name, and return it to the user
 
-操作mysql主要用到了lua-resty-mysql库，代码可以在[github](https://github.com/openresty/lua-resty-mysql)上找得到
+Operating mysql mainly uses the lua-resty-mysql library, the code can be found on [github](https://github.com/openresty/lua-resty-mysql)
 
-而且上面也有实例代码
+And there are example codes above
 
-由于官网给出的例子比较基本，代码也比较多，所以我这里主要介绍一些怎么封装一下，简化我们调用的代码
+Since the examples given by the official website are relatively basic and the code is relatively large, I mainly introduce how to encapsulate it here to simplify our call code
 
 lua/mysql.lua
 ```
@@ -53,7 +53,7 @@ end
 return _M
 ```
 
-其实就是简单把连接，跟关闭做一个简单的封装，隐藏繁琐的初始化已经连接池细节，只需要调用new，就自动就链接了redis，close自动使用连接池
+In fact, it is simply to encapsulate the connection and closing, hide the cumbersome initialization and connection pool details, just call new, it will automatically link to redis, and close will automatically use the connection pool
 
 lua/hello.lua
 ```
@@ -69,7 +69,7 @@ if name == nil or name == "" then
 	name = "root"	
 end
 
-name = ngx.quote_sql_str(name) -- SQL 转义，将 ' 转成 \', 防SQL注入，并且转义后的变量包含了引号，所以可以直接当成条件值使用
+name = ngx.quote_sql_str(name) -- SQL escape, convert ' to \', prevent SQL injection, and the escaped variable includes quotes, so it can be used directly as a condition value
 
 local db = mysql:new()
 
@@ -89,13 +89,14 @@ ngx.say(cjson.encode(res))
 
 ```
 
-访问
+Access
 http://localhost/lua/hello?name=root
 
-即可获取mysql中的name为root的的所有用户，如果没有name参数，则默认获取root的值
+You can get all users in mysql with the name root. If there is no name parameter, the default is to get the value of root
 
-从输出的数据中，可以看出res其实是一个数组，而且不管返回的数据是多少条，它都是一个数组，当我们查询的结果只有一条的时候，可以通过 res[1] 来获取一条记录，每一行数据又是一个table，可以通过列名来得到value
+From the output data, you can see that res is actually an array, and no matter how many data are returned, it is an array. When our query result is only one, you can get one record through res[1], each row of data is a table, you can get the value through the column name
 
-ok，到这里我们已经可以获取用户输入的值，并且从mysql中获取数据，然后返回json数据了，已经可以开发一些简单的接口了
+Ok, now we can get the user's input value, get data from mysql, and then return json data. We can develop some simple interfaces
 
-[示例代码](https://github.com/362228416/openresty-web-dev) 参见demo5部分
+[Example code](https://github.com/362228416/openresty-web-dev) See demo5 part
+

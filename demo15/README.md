@@ -1,8 +1,7 @@
-以前用tengine自带了session_sticky，现在换成openresty，没有现成的，nginx-sticky-module 太老， 编译有点问题，于是自己写了一个，废话不多说，直接看代码
+Previously, I used tengine which came with session_sticky. Now I've switched to openresty, which doesn't have a ready-made solution. The nginx-sticky-module is too old and has some compilation issues, so I wrote one myself. Without further ado, let's look at the code.
 
 lua/balancer.lua 
 ```lua
-
 local balancer = require "ngx.balancer"
 local upstream = require "ngx.upstream"
 
@@ -86,7 +85,7 @@ server {
         
 }
 
-# 健康检查
+# Health check
 lua_shared_dict healthcheck 1m;
 lua_socket_log_errors off;    
 init_worker_by_lua_block {
@@ -114,8 +113,6 @@ init_worker_by_lua_block {
 
 ```
 
+The main idea is to use the `ngx.upstream` and `ngx.balancer` modules to dynamically get the upstream and set the returned upstream list, then write it to the cookie. Here, it checks whether the backend is down. If it is, it gets the next one. The backend status is checked by the `resty.upstream.healthcheck` module. Based on this model, you can write more complex load balancing logic.
 
-
-主要是利用`ngx.upstream`、`ngx.balancer` 这两个模块，动态获取upstream，以及设置返回的上游名单，然后写到cookie里面，这里有判断后端是否down掉，如果down掉的话，则获取下一个，后端的状态通过`resty.upstream.healthcheck`模块健康检查来实现，以此为模型可以写更复杂的负载均衡逻辑
-
-我这里比较简单，嫌丑了
+My implementation is quite simple, and you might find it crude.

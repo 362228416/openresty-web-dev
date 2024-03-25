@@ -1,19 +1,23 @@
-#### 这章主要演示怎么通过lua连接redis，并根据用户输入的key从redis获取value，并返回给用户
+#### This chapter mainly demonstrates how to connect to Redis through Lua, get the value from Redis based on the user's input key, and return it to the user
 
-操作redis主要用到了lua-resty-redis库，代码可以在[github](https://github.com/openresty/lua-resty-redis)上找得到
+The operation of Redis mainly uses the lua-resty-redis library, the code can be found on [github](https://github.com/openresty/lua-resty-redis)
 
-而且上面也有实例代码
+And there are also example codes above
 
-由于官网给出的例子比较基本，代码也比较多，所以我这里主要介绍一些怎么封装一下，简化我们调用的代码
+Since the examples given by the official website are relatively basic and the code is relatively large, I mainly introduce here how to encapsulate it to simplify our call code
 
 lua/redis.lua
-```
+```lua
 local redis = require "resty.redis"
 
 local config = {
 	host = "127.0.0.1",
-    port = 6379,
-    -- pass = "1234"  -- redis 密码，没有密码的话，把这行注释掉
+   
+
+ port
+
+ = 6379,
+    -- pass = "1234"  -- redis password, if there is no password, comment out this line
 }
 
 local _M = {}
@@ -50,10 +54,10 @@ end
 return _M
 ```
 
-其实就是简单把连接，跟关闭做一个简单的封装，隐藏繁琐的初始化已经连接池细节，只需要调用new，就自动就链接了redis，close自动使用连接池
+In fact, it is simply to encapsulate the connection and closing, hide the tedious initialization and connection pool details, just call new, it will automatically connect to Redis, and close will automatically use the connection pool
 
 lua/hello.lua
-```
+```lua
 local cjson = require "cjson"
 local redis = require "redis"
 local req = require "req"
@@ -65,7 +69,7 @@ if key == nil or key == "" then
 	key = "foo"
 end
 
--- 下面的代码跟官方给的基本类似，只是简化了初始化代码，已经关闭的细节，我记得网上看到过一个  是修改官网的代码实现，我不太喜欢修改库的源码，除非万不得已，所以尽量简单的实现
+-- The code below is similar to the official one, just simplifying the initialization code and closing details. I remember seeing a modification of the official code implementation on the Internet. I don't like to modify the source code of the library unless I have to, so I try to implement it simply
 local red = redis:new()
 local value = red:get(key)
 red:close()
@@ -78,11 +82,11 @@ ngx.say(cjson.encode(data))
 
 ```
 
-访问
+Access
 http://localhost/lua/hello?key=hello
 
-即可获取redis中的key为hello的值，如果没有key参数，则默认获取foo的值
+You can get the value of the key in Redis as hello. If there is no key parameter, the default is to get the value of foo
 
-ok，到这里我们已经可以获取用户输入的值，并且从redis中获取数据，然后返回json数据了，已经可以开发一些简单的接口了
+Ok, at this point we can already get the user's input value, and get data from Redis, and then return json data, and can develop some simple interfaces
 
-[示例代码](https://github.com/362228416/openresty-web-dev) 参见demo4部分
+[Example code](https://github.com/362228416/openresty-web-dev) See the demo4 part

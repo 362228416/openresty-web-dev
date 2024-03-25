@@ -1,9 +1,8 @@
+# This article mainly introduces how to implement a single file entry with lua
 
-# 这篇文章主要介绍，怎么用lua实现单一文件入口
+Previous examples required individual configuration of static file locations and lua_package_path in the nginx.conf file. Actually, these can be integrated into a single entry file.
 
-之前的例子都需要在nginx.conf文件中，单独配置静态文件location，以及lua_package_path，其实可以把这些整合到一个入口文件
-
-## 几个关键指令和api
+## Key directives and APIs
 
 set_by_lua_file
 
@@ -15,20 +14,20 @@ package.path
 
 ngx.get_phase()
 
-## 实现思路
+## Implementation idea
 
-在一个location / 里面处理所有请求，所以原型配置会是这样 
+Handle all requests in a location /, so the prototype configuration would look like this:
 
-```
+```nginx
 location / {
     default_type "text/html; charset=utf-8";
     content_by_lua_file lua/web/mvc.lua;
 }
 ```
 
-我想要访问静态资源的时候使用nginx默认的处理机制，也就是指定root 目录，所以配置文件成了下面的样子
+I want to use the default nginx mechanism when accessing static resources, that is, specify the root directory, so the configuration file becomes like this:
 
-```
+```nginx
 location / {
     default_type "text/html; charset=utf-8";
     access_by_lua_file lua/web/mvc.lua;
@@ -36,9 +35,9 @@ location / {
 }
 ```
 
-最后我想用lua来配置root目录，那样就不需要改nginx.conf配置文件，最后变成这样
+Finally, I want to use lua to configure the root directory, so that I don't need to modify the nginx.conf configuration file, and it finally becomes like this:
 
-```
+```nginx
 location / {
     default_type "text/html; charset=utf-8";
     set_by_lua_file $root lua/web/mvc.lua;
@@ -47,11 +46,11 @@ location / {
 }
 ```
 
-这样的话，所有的处理都指向了mvc.lua文件，接下来看lua端怎么实现
+In this way, all processing points to the mvc.lua file. Let's see how to implement it on the lua side.
 
-首先我们需要知道lua package加载路径，否则引入自定义的lua模块可能会失败
+First, we need to know the lua package loading path, otherwise importing custom lua modules may fail.
 
-代码很简单
+The code is simple:
 
 ```lua
 local package = package
@@ -61,34 +60,30 @@ local p = prefix .. "lualib/?.lua;" .. prefix .. "lua/?.lua;;" .. pack_path
 package.path = p
 ```
 
-先获取package默认加载路径，再获取当前项目安装目录，最后组装成新的package覆盖原来的package.path即可实现在nginx.conf里面配置lua_package_path一致的效果
+First get the default package loading path, then get the current project installation directory, and finally assemble it into a new package to cover the original package.path to achieve the same effect as configuring lua_package_path in nginx.conf.
 
-
-接下来处理set_by_lua_file，通过ngx.get_phase()获取到当前执行环境是set，既set_by_*阶段
-
+Next, handle set_by_lua_file. Get the current execution environment is set, that is, the set_by_* phase, through ngx.get_phase().
 
 ```lua
 local phase = ngx.get_phase()
 
--- 设置root环境变量
+-- Set root environment variable
 if phase == 'set' then
     local global_config = require "global_config"
     return global_config.baseDir
 end
 ```
 
-这样外面的root值就动态指定，但是因为配置了access_by_lua_file所以静态资源请求，还是会执行这个lua文件，这里只需要忽略掉就好了，直接return
+In this way, the external root value is dynamically specified, but because access_by_lua_file is configured, static resource requests will still execute this lua file. Here, just ignore it and return directly.
 
 ```lua
--- 静态文件
+-- Static files
 if paths[1] == 'image' or paths[1] == 'style' or paths[1] == 'js' then
     return
 end
-
 ```
 
-
-最后就是lua模块渲染了，这里只是随便写一个demo，仅供参考
+Finally, it's the rendering of the lua module. Here is just a demo written casually for reference.
 
 ```lua
 local template = require "web.template"
@@ -110,17 +105,15 @@ else
 end
 ```
 
-执行命令
+Execute the command
 
 ```bash
 cd demo16
 openresty -p . -c conf/nginx.conf
 ```
 
-浏览器访问 http://localhost:8080/
+Visit http://localhost:8080/ in the browser.
 
-页面是由lua渲染的，可以看得出index.html里面有模板代码，都被替换了，然后js文件也能正常加载，点击hello按钮会弹出hello
+The page is rendered by lua. You can see that there are template codes in index.html, which have been replaced, and the js file can also be loaded normally. Clicking the hello button will pop up hello.
 
-到这里基本就结束了，发挥你的想象力吧，lua真的很强
-
-
+That's basically it, use your imagination, lua is really powerful.

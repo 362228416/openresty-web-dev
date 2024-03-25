@@ -1,18 +1,17 @@
-有的时候我们希望在启动openresty的时候，在后台运行一些定时任务，可以放在`init_worker_by_lua_block`阶段运行，如果想重复执行可以通过不断`ngx.timer.at`来实现多次调用
+Sometimes we want to run some scheduled tasks in the background when starting openresty, which can be run in the `init_worker_by_lua_block` phase. If you want to execute repeatedly, you can achieve multiple calls through continuous `ngx.timer.at`.
 
-需要注意的是`init_worker_by_lua_block`会在每个worker启动的时候都会运行，当你的worker_processes配置为1的时候，没有任何问题，但是当你worker_processes配置为大于1的时候，会在后台运行多个定时任务，如果你的任务可以重复执行，那还没关系，假如不能的话，就有点问题了。
+It should be noted that `init_worker_by_lua_block` will run every time each worker starts. When your worker_processes is configured as 1, there is no problem. But when your worker_processes is configured as more than 1, multiple scheduled tasks will run in the background. If your task can be executed repeatedly, it's okay. If not, there might be a problem.
 
-为了解决配置多个worker会启动多个任务的问题，需要有一种机制就是即使这段代码会重复运行，但是也只能启动一个定时任务，那么就需要多个worker进行排他处理
+To solve the problem of starting multiple tasks with multiple worker configurations, there needs to be a mechanism that even if this code is run repeatedly, only one scheduled task can be started, so multiple workers need to be processed exclusively.
 
-我们可以配置一个`lua_shared_dict`共享字典，这个字典在多个worker之间共享，有了这个就好办了，只需要在第一个worker启动完成之后，在内存里面设置一个字段，标识任务已经启动，那么其他worker启动的时候发现已经启动了一个定时任务，不再启动就可以了。
+We can configure a `lua_shared_dict` shared dictionary, which is shared among multiple workers. With this, it's easy to handle. Just set a field in memory after the first worker starts, indicating that the task has started. Then when other workers start, they find that a scheduled task has already started and they will not start again.
 
-大多数情况下这样就已经可以了，但是lua_shared_dict保存的数据的生命周期是即使在nginx -s reload 的时候它还是会继续存在的，并不会消失，除非stop。
+In most cases, this is enough. But the data saved by lua_shared_dict will continue to exist even when nginx -s reload, and will not disappear unless stopped.
 
-而nginx -s reload 又会导致旧worker被结束，新worker被启动，但是又由于之前在共享内存里面保存了已启动标识状态，导致新的worker不能启动定时任务，知道了原因解决起来就很简单了，只需要在第一worker启动定时任务的时候延迟一小会，把共享字典里面的值重置了就行了，这样下次reload的时候就相当于第一次启动，ok 完美。。
+And nginx -s reload will cause the old worker to end and the new worker to start. But because the started status was saved in shared memory before, the new worker cannot start the scheduled task. Knowing the reason, it's easy to solve. Just delay a little when the first worker starts the scheduled task, and reset the value in the shared dictionary. So the next time you reload, it's like the first time you start, ok perfect..
 
 conf/nginx.conf
-```
-
+```nginx
 worker_processes  3;
 
 error_log logs/error.log notice;
@@ -51,13 +50,11 @@ http {
         location / {
             default_type text/html;
             content_by_lua_block {
-                ngx.say('定时任务')
+                ngx.say('Scheduled task')
             }
         }
     }
 }
-
 ```
 
-[示例代码](https://github.com/362228416/openresty-web-dev) 参见demo14部分
-
+[Example code](https://github.com/362228416/openresty-web-dev) See part demo14

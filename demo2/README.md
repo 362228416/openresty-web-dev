@@ -1,37 +1,37 @@
-#### 这一章主要介绍介绍怎么获取请求参数，并且处理之后返回数据
+#### This chapter mainly introduces how to obtain request parameters, process them, and return data
 
-我们知道http请求通常分为两种，分别是GET，POST，在http协议中，GET参数通常会紧跟在uri后面，而POST请求参数则包含在请求体中，nginx默认情况下是不会读取POST请求参数的，最好也不要试图使改变这种行为，因为大多数情况下，POST请求都是转到后端去处理，nginx只需要读取请求uri部分，以及请求头
+We know that HTTP requests are usually divided into two types, namely GET and POST. In the HTTP protocol, GET parameters usually follow the URI, while POST request parameters are contained in the request body. By default, Nginx does not read POST request parameters, and it is best not to try to change this behavior, because in most cases, POST requests are processed by the backend, and Nginx only needs to read the request URI part and the request header.
 
-由于这样的设计，所以获取请求参数的方式也有两种
+Due to this design, there are two ways to obtain request parameters.
 
-GET 
-```
-local args = ngx.req.get_uri_args() -- 这里是一个table，包含所有get请求参数
-local id = ngx.var.arg_id -- 这里获取单个请求参数，但是如果没有传递这个参数，则会报错，推荐上面那张获取方式
+GET
+```lua
+local args = ngx.req.get_uri_args() -- This is a table containing all get request parameters
+local id = ngx.var.arg_id -- This gets a single request parameter, but if this parameter is not passed, it will report an error. The above method is recommended.
 ```
 
 POST
-```
-ngx.req.read_body() -- 先读取请求体
-local args = ngx.req.get_post_args() -- 这里也是一个table，包含所有post请求参数
+```lua
+ngx.req.read_body() -- First read the request body
+local args = ngx.req.get_post_args() -- This is also a table, containing all post request parameters
 ```
 
-可以通过下面这个方法获取http请求方法
-```
+You can get the HTTP request method through the following method
+```lua
 local request_method = ngx.var.request_method -- GET or POST
 ```
 
-为了统一获取请求参数的方式，隐藏具体细节，提供一个更友好的api接口，我们可以简单的封装一下
+In order to unify the way to obtain request parameters, hide specific details, and provide a more friendly API interface, we can simply encapsulate it.
 
 lua/req.lua
-```
+```lua
 local _M = {}
 
--- 获取http get/post 请求参数
+-- Get http get/post request parameters
 function _M.getArgs()
     local request_method = ngx.var.request_method
     local args = ngx.req.get_uri_args()
-    -- 参数获取
+    -- Parameter acquisition
     if "POST" == request_method then
         ngx.req.read_body()
         local postArgs = ngx.req.get_post_args()
@@ -47,12 +47,12 @@ end
 return _M
 ```
 
-这个模块就实现了参数的获取，而且支持GET，POST两种传参方式，以及参数放在uri，body的post请求，会合并两种方式提交的参数
+This module implements the acquisition of parameters and supports both GET and POST parameter passing methods, as well as parameters placed in the URI and body of the post request, and will merge parameters submitted in both ways.
 
-接下来我们可以写一个简单的lua，来引入这个模块，然后测试一下效果
+Next, we can write a simple lua to introduce this module and then test the effect.
 
 conf/nginx.conf
-```
+```nginx
 worker_processes  1;
 
 error_log logs/error.log;
@@ -62,7 +62,7 @@ events {
 }
 
 http {
-    lua_package_path /Users/Lin/opensource/openresty-web-dev/demo2/lua/?.lua;  # 这里一定要指定package_path，否则会找不到引入的模块，然后会500
+    lua_package_path /Users/Lin/opensource/openresty-web-dev/demo2/lua/?.lua;  # Be sure to specify the package_path here, otherwise the introduced module will not be found and will result in a 500 error.
     server {
         listen 80;
         server_name localhost;
@@ -76,7 +76,7 @@ http {
 ```
 
 lua/hello.lua
-```
+```lua
 local req = require "req"
 
 local args = req.getArgs()
@@ -88,17 +88,16 @@ if name == nil or name == "" then
 end
 
 ngx.say("<p>hello " .. name .. "!</p>")
-
 ```
 
-测试
+Test
 
 http://localhost/lua/hello?name=Lin
-输出 hello Lin!
+Output: hello Lin!
 http://localhost/lua/hello
 
-输出 hello guest!
+Output: hello guest!
 
-ok 到这里，我们已经能够根据请求的参数，并且在做一下处理后返回数据了
+Ok, at this point, we can return data after processing the request parameters.
 
-[示例代码](https://github.com/362228416/openresty-web-dev)  参见demo2部分
+[Example code](https://github.com/362228416/openresty-web-dev) See the demo2 part
